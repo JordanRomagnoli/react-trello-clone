@@ -44,7 +44,7 @@ const Task = ({
             className={`w-full py-4 px-4 rounded-md flex transition-all -bg--tasks-color shadow-md ${
                 isOpen
                     ? "flex-col gap-5"
-                    : "flex-row justify-between hover:bg-[#444444] whitespace-nowrap overflow-x-hidden cursor-pointer"
+                    : "flex-row justify-between hover:bg-[#444444] cursor-pointer whitespace-nowrap overflow-hidden"
             }`}
             onClick={() => {
                 if (!titleIsOpen) {
@@ -66,7 +66,7 @@ const Task = ({
                         </div>
                     ) : (
                         <h4
-                            className="text-center font-semibold"
+                            className=" font-semibold text-wrap overflow-ellipsis overflow-hidden"
                             onClick={setTitleIsOpen}
                         >
                             {taskTitle}
@@ -75,7 +75,7 @@ const Task = ({
 
                     {!descriptionIsOpen ? (
                         <p
-                            className={` min-h-14 cursor-text ${
+                            className={` min-h-14 cursor-text w-full text-wrap overflow-auto break-words ${
                                 !taskDescription && "-text--add-group-color"
                             }`}
                             onClick={openDescriptionInput}
@@ -88,7 +88,7 @@ const Task = ({
                             onChange={handleDescriptionChange}
                             value={descriptionValue}
                             rows={5}
-                            className="w-full bg-transparent -text--text-color text-sm outline-none p-2 rounded-md border -border--add-group-color"
+                            className="text-area-no-scroll scrol w-full bg-transparent -text--text-color text-sm outline-none p-2 rounded-md border -border--add-group-color"
                             placeholder={
                                 taskDescription || "Aggiungi descrizione"
                             }
@@ -149,7 +149,7 @@ const Task = ({
                                 type="text"
                                 value={titleValue}
                                 placeholder={taskTitle || "Aggiungi titolo"}
-                                className="w-full bg-transparent -text--text-color text-sm outline-none"
+                                className="w-[85%] bg-transparent -text--text-color text-sm outline-none"
                                 onClick={(e) => e.stopPropagation()}
                                 onChange={handleTitleChange}
                             />
@@ -167,7 +167,7 @@ const Task = ({
                     ) : (
                         <>
                             <span
-                                className="text-ellipsis cursor-text"
+                                className="text-ellipsis cursor-text w-[90%] overflow-hidden overflow-ellipsis"
                                 onClick={openTitleInput}
                             >
                                 {taskTitle}
