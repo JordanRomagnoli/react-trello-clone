@@ -1,5 +1,7 @@
 import React from "react";
 import { useState } from "react";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { MdDragIndicator } from "react-icons/md";
 import { FaTrashAlt, FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
@@ -13,6 +15,14 @@ const Task = ({
     handleSetTitleTask,
     handleSetDescriptionTask,
 }) => {
+    const { attributes, listeners, setNodeRef, transform, transition } =
+        useSortable({ id });
+
+    const style = {
+        transition,
+        transform: CSS.Transform.toString(transform),
+    };
+
     const [isOpen, setIsOpen] = useState(false);
     const [descriptionIsOpen, setDescriptionIsOpen] = useState(false);
     const [titleIsOpen, setTitleIsOpen] = useState(true);
@@ -51,6 +61,8 @@ const Task = ({
                     setIsOpen(true);
                 }
             }}
+            ref={setNodeRef}
+            style={style}
         >
             {isOpen ? (
                 <>
@@ -58,7 +70,7 @@ const Task = ({
                         <div className="">
                             <input
                                 type="text"
-                                value={titleValue}
+                                value={titleValue || ""}
                                 placeholder={taskTitle || "Aggiungi titolo"}
                                 className="w-full bg-transparent -text--text-color text-sm outline-none"
                                 onChange={handleTitleChange}
@@ -86,7 +98,7 @@ const Task = ({
                         <textarea
                             onClick={(e) => e.stopPropagation()}
                             onChange={handleDescriptionChange}
-                            value={descriptionValue}
+                            value={descriptionValue || ""}
                             rows={5}
                             className="text-area-no-scroll scrol w-full bg-transparent -text--text-color text-sm outline-none p-2 rounded-md border -border--add-group-color"
                             placeholder={
@@ -167,12 +179,17 @@ const Task = ({
                     ) : (
                         <>
                             <span
-                                className="text-ellipsis cursor-text w-[90%] overflow-hidden overflow-ellipsis"
+                                className="text-ellipsis cursor-text w-auto max-w-[90%] overflow-hidden overflow-ellipsis"
                                 onClick={openTitleInput}
                             >
                                 {taskTitle}
                             </span>
-                            <MdDragIndicator className="text-xl -text--add-group-color ml-2 cursor-grab active:cursor-grabbing" />
+                            <MdDragIndicator
+                                className="text-xl -text--add-group-color ml-2 cursor-grab active:cursor-grabbing outline-none"
+                                {...(!isOpen && !titleIsOpen
+                                    ? { ...attributes, ...listeners }
+                                    : {})}
+                            />
                         </>
                     )}
                 </>

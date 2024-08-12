@@ -1,3 +1,4 @@
+import { arrayMove } from "@dnd-kit/sortable";
 import {
     ADD_GROUP,
     DELETE_GROUP,
@@ -6,6 +7,7 @@ import {
     DELETE_TASK,
     SET_TITLE_TASK,
     SET_DESCRIPTION_TASK,
+    RECORD_TASK,
 } from "./models";
 
 export default function reducer(state, action) {
@@ -61,6 +63,10 @@ export default function reducer(state, action) {
                   }
                 : task
         );
+    }
+
+    if (action.type === RECORD_TASK) {
+        return arrayMove(state, action.oldIndex, action.newIndex);
     }
 
     return state;
