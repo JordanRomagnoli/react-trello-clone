@@ -1,41 +1,14 @@
-import React, { useReducer, useState } from "react";
-import reducer from "../reducer";
+import React from "react";
 import { Group } from "../components";
-import { ADD_GROUP, DELETE_GROUP, SET_GROUP_TITLE } from "../models";
+import { useGroups } from "../utils";
 
 const Groups = () => {
-    const [groups, dispatch] = useReducer(reducer, [
-        {
-            id: 1,
-            groupTitle: "Gruppo 1",
-            tasks: [],
-        },
-    ]);
-
-    const handleAddGroups = () => {
-        dispatch({
-            type: ADD_GROUP,
-            nextId:
-                groups.length > 0
-                    ? Number(groups[groups.length - 1].id) + 1
-                    : 1,
-        });
-    };
-
-    const handleDeleteGroups = (id) => {
-        dispatch({
-            type: DELETE_GROUP,
-            id: id,
-        });
-    };
-
-    const handleSetGroupTitle = (id, title) => {
-        dispatch({
-            type: SET_GROUP_TITLE,
-            id: id,
-            groupTitle: title,
-        });
-    };
+    const {
+        memoizedGroups,
+        handleAddGroups,
+        handleDeleteGroups,
+        handleSetGroupTitle,
+    } = useGroups();
 
     return (
         <div className="flex gap-6 items-start">
@@ -45,7 +18,7 @@ const Groups = () => {
             >
                 <h3 className="text-5xl">+</h3>
             </article>
-            {groups.map((group, idx) => {
+            {memoizedGroups.map((group) => {
                 return (
                     <Group
                         key={group.id}

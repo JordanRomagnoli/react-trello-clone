@@ -1,11 +1,12 @@
 import React from "react";
-import { useState } from "react";
 import { useSortable } from "@dnd-kit/sortable";
+import { Button } from "./";
 import { CSS } from "@dnd-kit/utilities";
 import { MdDragIndicator } from "react-icons/md";
 import { FaTrashAlt, FaCheck } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { IoIosArrowUp } from "react-icons/io";
+import { useTask } from "../utils";
 
 const Task = ({
     id,
@@ -15,6 +16,21 @@ const Task = ({
     handleSetTitleTask,
     handleSetDescriptionTask,
 }) => {
+    const {
+        isOpen,
+        setIsOpen,
+        titleIsOpen,
+        setTitleIsOpen,
+        openTitleInput,
+        descriptionIsOpen,
+        setDescriptionIsOpen,
+        openDescriptionInput,
+        titleValue,
+        descriptionValue,
+        handleTitleChange,
+        handleDescriptionChange,
+    } = useTask();
+
     const { attributes, listeners, setNodeRef, transform, transition } =
         useSortable({ id });
 
@@ -23,35 +39,9 @@ const Task = ({
         transform: CSS.Transform.toString(transform),
     };
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [descriptionIsOpen, setDescriptionIsOpen] = useState(false);
-    const [titleIsOpen, setTitleIsOpen] = useState(true);
-    const [titleValue, setTitleValue] = useState("");
-    const [descriptionValue, setDescriptionValue] = useState("");
-
-    const openTitleInput = (e) => {
-        e.stopPropagation();
-
-        setTitleIsOpen(!titleIsOpen);
-    };
-
-    const handleTitleChange = (e) => {
-        setTitleValue(e.target.value);
-    };
-
-    const openDescriptionInput = (e) => {
-        e.stopPropagation();
-
-        setDescriptionIsOpen(!descriptionIsOpen);
-    };
-
-    const handleDescriptionChange = (e) => {
-        setDescriptionValue(e.target.value);
-    };
-
     return (
         <li
-            className={`w-full py-4 px-4 rounded-md flex transition-all -bg--tasks-color shadow-md ${
+            className={`w-full py-4 px-4 rounded-md shrink-0 flex transition-all -bg--tasks-color shadow-md ${
                 isOpen
                     ? "flex-col gap-5"
                     : "flex-row justify-between hover:bg-[#444444] cursor-pointer whitespace-nowrap overflow-hidden"
@@ -107,17 +97,18 @@ const Task = ({
                         ></textarea>
                     )}
                     <div className="flex justify-between">
-                        <button
-                            className="h-9 w-9 rounded-full -bg--add-group-color leading-7 hover:-bg--groups-color transition-colors active:scale-90"
-                            onClick={handleDeleteTask}
-                        >
-                            <FaTrashAlt className="mx-auto text-sm" />
-                        </button>
+                        <Button
+                            bgColor="-bg--add-group-color"
+                            hoverBgColor="-bg--groups-color"
+                            handleFunction={handleDeleteTask}
+                            Icon={FaTrashAlt}
+                        />
 
                         <div className="flex items-center gap-3">
-                            <button
-                                className="h-9 w-9 leading-7 text-center rounded-full -bg--add-group-color hover:-bg--groups-color transition-colors active:scale-90"
-                                onClick={(e) => {
+                            <Button
+                                bgColor="-bg--add-group-color"
+                                hoverBgColor="-bg--groups-color"
+                                handleFunction={(e) => {
                                     e.stopPropagation();
                                     setIsOpen(false);
                                     if (titleIsOpen) {
@@ -127,18 +118,23 @@ const Task = ({
                                         setDescriptionIsOpen();
                                     }
                                 }}
-                            >
-                                {descriptionIsOpen || titleIsOpen ? (
-                                    <IoClose className="text-2xl -text--null-button mx-auto" />
-                                ) : (
-                                    <IoIosArrowUp className="text-2xl -text--text-color mx-auto" />
-                                )}
-                            </button>
+                                Icon={
+                                    descriptionIsOpen || titleIsOpen
+                                        ? IoClose
+                                        : IoIosArrowUp
+                                }
+                                iconClass={
+                                    (descriptionIsOpen || titleIsOpen) &&
+                                    "-text--null-button"
+                                }
+                            />
+
                             {(taskTitle !== titleValue ||
                                 taskDescription !== descriptionValue) && (
-                                <button
-                                    className="h-9 w-9 leading-7 text-center rounded-full -bg--add-group-color hover:-bg--groups-color transition-colors active:scale-90"
-                                    onClick={() => {
+                                <Button
+                                    bgColor="-bg--add-group-color"
+                                    hoverBgColor="-bg--groups-color"
+                                    handleFunction={() => {
                                         handleSetTitleTask(titleValue);
                                         handleSetDescriptionTask(
                                             descriptionValue
@@ -146,9 +142,9 @@ const Task = ({
                                         setTitleIsOpen();
                                         setDescriptionIsOpen();
                                     }}
-                                >
-                                    <FaCheck className="text-xl -text--save-button mx-auto" />
-                                </button>
+                                    Icon={FaCheck}
+                                    iconClass="-text--save-button"
+                                />
                             )}
                         </div>
                     </div>
